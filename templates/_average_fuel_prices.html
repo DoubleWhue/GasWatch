@@ -1,0 +1,23 @@
+<section class="panel average-section" id="fuel-average">
+  <div class="panel-head average-head">
+    <div><div class="section-kicker">MARKET SNAPSHOT</div><h2>Average Fuel Prices <span class="heading-accent">by Type</span></h2><p>Fuel category prices per liter, based on available records</p></div>
+  </div>
+  <form method="get" action="{{ request.path }}#fuel-average" class="average-filters">
+    <label>City<select name="average_city"><option value="">All monitored cities</option>{% for c in fuel_averages.cities %}<option value="{{ c.city }}" {{ 'selected' if c.city==fuel_averages.city }}>{{ c.city }}</option>{% endfor %}</select></label>
+    <button type="submit" class="btn btn-primary">Apply filters</button>
+  </form>
+  <div class="average-grid">
+   {% for item in fuel_averages.cards %}
+   <div class="average-card">
+      <div class="average-card-top"><span class="average-fuel-name">{{ item.fuel_name|fuel_label }}</span><span class="average-card-mark"><svg class="icon"><use href="#i-fuel"/></svg></span></div>
+      {% if item.average_price is not none %}<strong class="average-value nums">{{ item.average_price|peso }}<small> / L</small></strong><span class="average-count">{{ item.sample_count }} valid {{ 'city common-price' if fuel_averages.source=='doe' else 'station price' }} record{{ '' if item.sample_count==1 else 's' }}</span>
+      {% else %}<strong class="average-value empty-average">—</strong><span class="average-count">No available price records</span>{% endif %}
+   </div>
+   {% endfor %}
+  </div>
+  <div class="average-note">
+   <svg class="icon"><use href="#i-alert"/></svg>
+   {% if fuel_averages.source=='doe' %}The displayed average is calculated from the available <b>DOE city common prices</b>, not individual station pump prices. Blank / N/A figures are excluded. {% if fuel_averages.week %}Latest reporting week: {{ fuel_averages.week.week_start|fmtdate }} – {{ fuel_averages.week.week_end|fmtdate }}.{% endif %}
+   {% else %}Station averages use current recorded prices of active individual stations only. DOE city ranges are not mixed into these averages.{% endif %}
+  </div>
+</section>

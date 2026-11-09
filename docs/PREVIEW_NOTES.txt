@@ -1,0 +1,1 @@
+Preview images use known prices from the user-supplied DOE September 29-October 5, 2026 sample PDF, manually supplied to the renderer without a live database. They demonstrate appearance and responsive layout only. To see real data, import the PDF using the admin flow. They are not screenshots of a running XAMPP/MySQL application.

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}Price Trends{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">FUEL PRICE INTELLIGENCE</div><h1>Price Trends & History</h1><p>Follow the reported prices through multiple DOE monitoring periods.</p></div></div>
+<section class="panel"><div class="panel-head"><div><h2>Filter the trend</h2><p>Choose a city, brand, and fuel type.</p></div></div>
+<form method="get" class="filters"><label>Gasoline brand<select name="brand">{% for b in brands %}<option value="{{ b }}" {{ 'selected' if brand==b }}>{{ 'All brands (city range)' if b=='OVERALL' else b|title }}</option>{% endfor %}</select></label>
+<label>Fuel type<select name="fuel">{% for f in fuels %}<option value="{{ f.fuel_name }}" {{ 'selected' if fuel==f.fuel_name }}>{{ f.fuel_name|fuel_label }}</option>{% endfor %}</select></label>
+<label>City<select name="city">{% for c in cities %}<option value="{{ c.city }}" {{ 'selected' if city==c.city }}>{{ c.city }}</option>{% endfor %}</select></label>
+<button class="btn btn-primary">Show trend</button></form></section>
+<section class="panel"><div class="panel-head"><div><div class="section-kicker">HISTORICAL PRICE RANGES</div><h2>{{ city }} · {{ fuel|fuel_label }}</h2><p>{{ brand|title }} · {{ rows|length }} monitoring period{{ '' if rows|length==1 else 's' }}</p></div><span class="source-badge">DOE WEEKLY DATA</span></div>
+<div class="chart-holder" id="trend-chart" data-labels='{{ chart_labels|tojson }}' data-low='{{ chart_min|tojson }}' data-high='{{ chart_max|tojson }}'>{% if not rows %}<div class="empty">No DOE records for this selection. Import the relevant weekly reports to display a chart.</div>{% endif %}</div>
+<div class="legend"><span class="legend-dot one"></span> Minimum published price <span class="legend-dot two"></span> Maximum published price</div>
+{% if rows|length < 2 %}<div class="chart-context">At least two separate monitoring weeks are needed to show a price movement. No missing dates are interpolated.</div>{% endif %}
+</section>
+<section class="panel"><div class="panel-head"><div><h2>DOE price records</h2><p>Chronological monitoring periods</p></div></div><div class="table-scroll"><table><thead><tr><th>Monitoring week</th><th>Min. / L</th><th>Max. / L</th></tr></thead><tbody>{% for r in rows|reverse %}<tr><td>{{ r.week_start|fmtdate }}</td><td class="nums">{{ r.min_price|peso }}</td><td class="nums">{{ r.max_price|peso }}</td></tr>{% else %}<tr><td colspan="3" class="empty">No saved history.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}{% block scripts %}<script>drawTrendChart();</script>{% endblock %}

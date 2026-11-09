@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0B1F3A">
+  <title>{% block title %}GasWatch{% endblock %} · Metro Manila</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='theme.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon-sprite">
+  <symbol id="i-fuel" viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M3 21h14M4 10h12M8 6h4M16 8l3 3v7a2 2 0 0 0 4 0v-6l-2-2"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6ZM9 3v15m6-12v15"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 19h18M4 14l5-5 4 3 7-8m-5 0h5v5"/></symbol>
+  <symbol id="i-compare" viewBox="0 0 24 24"><path d="M3 7h18M7 3l-4 4 4 4M21 17H3m14-4 4 4-4 4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5m-7 7 7-7 7 7"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3M7 8l5-5 5 5M4 16v4h16v-4"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5m5 5H3M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Zm0 7v4m0 4h.01"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4m6 16v-8m5 8H3"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+</svg>
+<button class="mobile-toggle" id="menuToggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">☰</button>
+<aside class="sidebar" id="sidebar" aria-label="Site navigation">
+  <a class="brand" href="{{ url_for('home') }}">
+    <span class="brand-emblem"><svg class="icon"><use href="#i-fuel"/></svg></span>
+    <span class="brand-text"><strong>Gas<span>Watch</span></strong><small>FUEL PRICE INTELLIGENCE</small></span>
+  </a>
+  <div class="nav-scroll">
+   {% if me %}
+     <div class="nav-label">Administration</div><nav>
+      <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint=='admin_dashboard' else '' }}"><svg class="icon"><use href="#i-grid"/></svg>Overview</a>
+      <a href="{{ url_for('admin_import') }}" class="{{ 'active' if request.endpoint in ('admin_import','admin_import_preview') else '' }}"><svg class="icon"><use href="#i-upload"/></svg>PDF Extraction</a>
+      <a href="{{ url_for('admin_stations') }}" class="{{ 'active' if request.endpoint=='admin_stations' else '' }}"><svg class="icon"><use href="#i-fuel"/></svg>Gas Stations</a>
+      <a href="{{ url_for('admin_fuels') }}" class="{{ 'active' if request.endpoint=='admin_fuels' else '' }}"><svg class="icon"><use href="#i-list"/></svg>Fuel Types</a>
+      <a href="{{ url_for('admin_prices') }}" class="{{ 'active' if request.endpoint=='admin_prices' else '' }}"><svg class="icon"><use href="#i-chart"/></svg>Manage Prices</a>
+      <a href="{{ url_for('reports') }}" class="{{ 'active' if request.endpoint in ('reports','export_report') else '' }}"><svg class="icon"><use href="#i-list"/></svg>Reports</a>
+     </nav><div class="nav-divider"></div>
+   {% endif %}
+   <div class="nav-label">Explore GasWatch</div>
+   <nav>
+     <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint=='home' else '' }}"><svg class="icon"><use href="#i-grid"/></svg>Dashboard</a>
+     <a href="{{ url_for('city_explorer') }}" class="{{ 'active' if request.endpoint=='city_explorer' else '' }}"><svg class="icon"><use href="#i-map"/></svg>City Explorer</a>
+     <a href="{{ url_for('regional') }}" class="{{ 'active' if request.endpoint=='regional' else '' }}"><svg class="icon"><use href="#i-fuel"/></svg>Fuel Prices</a>
+     <a href="{{ url_for('history') }}" class="{{ 'active' if request.endpoint=='history' else '' }}"><svg class="icon"><use href="#i-trend"/></svg>Price Trends</a>
+     <a href="{{ url_for('compare') }}" class="{{ 'active' if request.endpoint=='compare' else '' }}"><svg class="icon"><use href="#i-compare"/></svg>Price Comparison</a>
+   </nav>
+  </div>
+  <div class="side-bottom">
+   <div class="data-source"><span class="source-dot"></span><span>DOE NCR price monitoring <small>Official publications</small></span></div>
+   {% if me %}
+   <small class="signed-in">Signed in as <b>{{ me.username }}</b></small>
+   <form class="logout-form" method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit"><svg class="icon"><use href="#i-log"/></svg> Sign out</button></form>
+   {% endif %}
+  </div>
+</aside>
+<div class="mobile-backdrop" id="mobileBackdrop"></div>
+<main class="main">
+  <header class="top-header"><span class="top-header-label">METRO MANILA / NATIONAL CAPITAL REGION</span><div class="top-header-right"><span class="top-live-dot"></span><span>Fuel price monitoring</span></div></header>
+  <div class="page-body">
+   {% with messages=get_flashed_messages(with_categories=true) %}{% for category,msg in messages %}<div class="notice {{ category }}">{{ msg }}</div>{% endfor %}{% endwith %}
+   {% block content %}{% endblock %}
+  </div>
+  <footer class="site-footer"><p><strong>Data transparency.</strong> DOE-reported prices are city-and-brand ranges, not verified pump prices at individual stations. Unavailable records are never estimated.</p><span>GasWatch · {{ current_year }}</span></footer>
+</main>
+<script src="{{ url_for('static',filename='app.js') }}"></script>
+<script src="{{ url_for('static',filename='gaswatch-ui.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero hero-refined">
+  <div class="hero-grid-art" aria-hidden="true"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span class="hero-pill-dot"></span> GASWATCH · METRO MANILA</div>
+    <h1>Fuel prices,<br><span>made easier to follow.</span></h1>
+    <p>Check reported prices by fuel type, discover rates across NCR cities, and compare brands using Department of Energy monitoring data.</p>
+    <div class="hero-actions"><a class="btn hero-btn" href="#fuel-average">View fuel prices <span>↗</span></a><a class="hero-text-link" href="{{ url_for('city_explorer') }}">Explore cities <span>→</span></a></div>
+  </div>
+  <div class="hero-illustration" aria-hidden="true"><div class="hero-orb orb-one"></div><div class="hero-orb orb-two"></div><div class="hero-fuel"><svg class="icon"><use href="#i-fuel"/></svg></div><div class="hero-ring"></div></div>
+</section>
+<div class="dashboard-meta dashboard-head-clean"><div><span class="eyebrow">PUBLIC DASHBOARD</span><h2>Fuel price overview</h2><p>Average prices by fuel type, based on available published records.</p></div><span class="latest-chip"><span class="top-live-dot"></span>{% if week %}{{ week.week_start|fmtdate }} – {{ week.week_end|fmtdate }}{% else %}No DOE report imported yet{% endif %}</span></div>
+{% include '_average_fuel_prices.html' %}
+<section class="gateway-section" aria-label="Explore more fuel prices">
+ <div class="gateway-title"><div><span class="eyebrow">FIND MORE INFORMATION</span><h2>Explore GasWatch</h2></div><p>Choose what you want to check next.</p></div>
+ <div class="gateway-grid">
+  <a href="{{ url_for('city_explorer') }}" class="gateway-card"><span class="gateway-icon"><svg class="icon"><use href="#i-map"/></svg></span><b>City Explorer</b><small>Browse the real map of Metro Manila</small><span class="gateway-arrow">↗</span></a>
+  <a href="{{ url_for('regional') }}" class="gateway-card"><span class="gateway-icon"><svg class="icon"><use href="#i-fuel"/></svg></span><b>Fuel Prices</b><small>View fuel ranges by city and brand</small><span class="gateway-arrow">↗</span></a>
+  <a href="{{ url_for('history') }}" class="gateway-card"><span class="gateway-icon"><svg class="icon"><use href="#i-trend"/></svg></span><b>Price Trends</b><small>Track changes across monitoring weeks</small><span class="gateway-arrow">↗</span></a>
+  <a href="{{ url_for('compare') }}" class="gateway-card"><span class="gateway-icon"><svg class="icon"><use href="#i-compare"/></svg></span><b>Compare Prices</b><small>Compare reported prices in one view</small><span class="gateway-arrow">↗</span></a>
+ </div>
+</section>
+{% endblock %}

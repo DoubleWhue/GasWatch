@@ -1,0 +1,43 @@
+{% extends 'base.html' %}{% block title %}City Explorer{% endblock %}
+{% block content %}
+<div class="page-heading city-page-title"><div><span class="eyebrow">METRO MANILA · CITY EXPLORER</span><h1>Find fuel prices by city</h1><p>Choose a city from the NCR reference map to view its reported fuel prices.</p></div><span class="source-badge">DOE PRICE MONITORING</span></div>
+<section class="panel city-section" id="city-explorer">
+ <div class="city-layout real-city-layout">
+
+<div class="map-panel ncr-outline-panel">
+ <div class="map-topline"><span>METRO MANILA</span><span class="map-card-chip">NCR CITY MAP</span></div>
+ <div class="ncr-outline-frame">
+  <svg id="ncrOutlineMap" class="ncr-outline-svg" viewBox="0 0 850 1093" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Map of the cities and municipality of Metro Manila. Select a city name to see its fuel prices."
+     data-current-city="{{ city_overview.selected_city }}" data-fuel="{{ city_overview.selected_fuel }}">
+   <image x="0" y="0" width="850" height="1093" href="{{ url_for('static',filename='ncr_reference_navy.webp') }}" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
+   <g id="ncrCityTargets"></g>
+  </svg>
+ </div>
+ <div class="ncr-outline-legend"><span><i class="ncr-red-dot"></i> Selected city</span><span>Click a city name to view prices</span></div>
+ <div class="map-bottom-line ncr-outline-bottom"><span id="mapBoundaryStatus">NCR reference outline · no map API needed</span><span>16 cities + Pateros</span></div>
+</div>
+  <div class="city-results city-real-results">
+   <div class="city-results-intro"><span class="section-kicker">CHOOSE A LOCATION</span><h2>City fuel prices</h2><p>View the latest DOE-reported price ranges for each city and fuel type.</p></div>
+   <form class="city-filters" method="get" action="{{ url_for('city_explorer') }}#city-explorer" id="cityExplorerForm">
+    <label>Choose city<select id="mapCitySelect" name="map_city">{% for c in city_overview.cities %}<option value="{{ c }}" {{ 'selected' if c==city_overview.selected_city }}>{{ c }}</option>{% endfor %}</select></label>
+    <label>Fuel type<select id="mapFuelSelect" name="map_fuel">{% for f in ['RON 91','RON 95','RON 97','RON 100','DIESEL','DIESEL PLUS','KEROSENE'] %}<option value="{{ f }}" {{ 'selected' if f==city_overview.selected_fuel }}>{{ f|fuel_label }}</option>{% endfor %}</select></label>
+    <button type="submit" class="btn btn-primary">Show city prices <span aria-hidden="true">↗</span></button>
+   </form>
+   <div class="selected-city-head"><div><span class="section-kicker">SELECTED CITY</span><h3>{{ city_overview.selected_city }}</h3><p>{{ city_overview.selected_fuel|fuel_label }} · Reported range per liter</p></div>{% if city_overview.entries %}<span class="city-result-count">{{ city_overview.entries|length }} brands</span>{% else %}<span class="city-result-count">No records</span>{% endif %}</div>
+   {% if week %}<div class="city-report-week">Monitoring week: <strong>{{ week.week_start|fmtdate }} – {{ week.week_end|fmtdate }}</strong></div>{% endif %}
+   <div class="brand-result-list">
+    {% for r in city_overview.entries[:8] %}
+      <div class="brand-result"><span class="brand-result-logo"><svg class="icon"><use href="#i-fuel"/></svg></span><div class="brand-result-name"><b>{{ r.brand|title }}</b><small>Minimum – Maximum price / L</small></div><strong>{{ r.min_price|peso }} <em>–</em> {{ r.max_price|peso }}</strong></div>
+    {% else %}
+      <div class="city-empty"><svg class="icon"><use href="#i-alert"/></svg><b>No available DOE prices for this selection</b><span>{% if not week %}The administrator has not imported a DOE NCR report yet. The included sample PDF can be uploaded through the admin interface.{% else %}Try another fuel type or city. Only verified imported DOE data appears here.{% endif %}</span></div>
+    {% endfor %}
+   </div>
+   <a class="city-more-link" href="{{ url_for('regional', city=city_overview.selected_city, fuel=city_overview.selected_fuel) }}">View all matching fuel prices <span>↗</span></a>
+   <p class="real-map-disclaimer">DOE reports show city/brand price ranges, not exact prices at an individual gas station. Map is a simplified city-reference illustration, not a street map or official cadastral survey.</p>
+  </div>
+ </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static',filename='ncr-map.js') }}"></script>
+{% endblock %}
